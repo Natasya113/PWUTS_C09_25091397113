@@ -139,7 +139,7 @@ window.initKatalog = function () {
               tersedia
                 ? `
                   <a
-                    href="pages/form.html"
+                    href="form.html?alat=${alat.id}"
                     class="button button-primary alat-pinjam"
                     data-page="form"
                     data-alat-id="${alat.id}"
@@ -170,6 +170,13 @@ window.initKatalog = function () {
 
     empty.hidden = hasil.length !== 0;
   }
+
+  list.addEventListener("error", function (event) {
+    if (event.target.tagName === "IMG") {
+      event.target.hidden = true;
+      event.target.parentElement.classList.add("foto-tidak-ada");
+    }
+  }, true);
 
   search.addEventListener("input", tampilkanAlat);
   filter.addEventListener("change", tampilkanAlat);

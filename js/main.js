@@ -1,7 +1,8 @@
 "use strict";
 
 const mainContent = document.getElementById("main-content");
-const berandaHTML = mainContent.innerHTML;
+const halamanAwal = document.body.dataset.page || "beranda";
+const berandaHTML = halamanAwal === "beranda" ? mainContent.innerHTML : null;
 
 let requestAktif = null;
 
@@ -54,7 +55,7 @@ function buatLayoutLayanan(page, isi) {
             </a>
 
             <a
-              href="pages/konten.html"
+              href="konten.html"
               data-page="katalog"
               ${page === "katalog"
                 ? 'class="selected" aria-current="page"'
@@ -64,7 +65,7 @@ function buatLayoutLayanan(page, isi) {
             </a>
 
             <a
-              href="pages/form.html"
+              href="form.html"
               data-page="form"
               ${page === "form"
                 ? 'class="selected" aria-current="page"'
@@ -95,8 +96,8 @@ function buatLayoutLayanan(page, isi) {
 /* Memuat konten halaman menggunakan Ajax. */
 async function muatHalaman(page, alatId) {
   const halaman = {
-    katalog: "pages/konten.html",
-    form: "pages/form.html"
+    katalog: "konten.html",
+    form: "form.html"
   };
 
   if (page !== "beranda" && !halaman[page]) return;
@@ -110,6 +111,10 @@ async function muatHalaman(page, alatId) {
   aturTampilan(page);
 
   if (page === "beranda") {
+    if (berandaHTML === null) {
+      window.location.href = "index.html";
+      return;
+    }
     mainContent.innerHTML = berandaHTML;
     window.scrollTo(0, 0);
     mainContent.focus({ preventScroll: true });
@@ -183,15 +188,12 @@ async function muatHalaman(page, alatId) {
        * Formulir yang hanya berisi konten akan otomatis
        * dibungkus dengan kerangka sidebar yang sama.
        */
-      const template = document.createElement("template");
-      template.innerHTML = html;
-
-      const sudahAdaLayout =
-        template.content.querySelector(".alat-layout");
-
-      mainContent.innerHTML = sudahAdaLayout
-        ? html
-        : buatLayoutLayanan(page, html);
+      const dokumen = new DOMParser().parseFromString(html, "text/html");
+      const konten = dokumen.querySelector("#main-content");
+      const layout = dokumen.querySelector(".alat-page");
+      mainContent.innerHTML = layout
+        ? layout.outerHTML
+        : buatLayoutLayanan(page, konten ? konten.innerHTML : dokumen.body.innerHTML);
 
       if (page === "katalog") {
         window.initKatalog();
@@ -259,3 +261,10 @@ document.addEventListener("click", function (event) {
     link.dataset.alatId
   );
 });
+
+/* Inisialisasi juga ketika halaman dibuka langsung. */
+aturTampilan(halamanAwal);
+if (halamanAwal === "katalog") window.initKatalog();
+if (halamanAwal === "form") {
+  window.initForm(new URLSearchParams(window.location.search).get("alat"));
+}

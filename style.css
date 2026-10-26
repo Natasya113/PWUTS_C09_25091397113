@@ -1775,3 +1775,4 @@ body.mode-layanan .alat-sidebar-note {
     transform: none;
   }
 }
+.alat-photo.foto-tidak-ada::before { content: "Foto alat belum tersedia"; display: grid; place-items: center; height: 100%; min-height: 180px; color: var(--muted); font-size: 14px; }

@@ -1,4 +1,81 @@
-<p class="alat-breadcrumb">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="Katalog alat dan layanan peminjaman alat Fakultas Vokasi UNESA."
+  >
+
+  <title>Pengajuan Peminjaman — SIPTA</title>
+
+  <!-- CSS utama berada di folder utama proyek -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- JavaScript berada di folder js -->
+  <script src="konten.js" defer></script>
+  <script src="validasi.js" defer></script>
+  <script src="main.js" defer></script>
+</head>
+
+<body data-page="form">
+  <a class="skip-link" href="#main-content">
+    Lewati ke konten utama
+  </a>
+
+  <main id="main-content" tabindex="-1">
+    <section class="alat-page">
+      <div class="alat-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="alat-sidebar">
+          <div class="alat-sidebar-title">
+            <a
+              class="alat-sidebar-icon"
+              href="index.html"
+              aria-label="SIPTA Beranda"
+            >S</a>
+
+            <div>
+              <strong>SIPTA</strong>
+              <small>Layanan mahasiswa</small>
+            </div>
+          </div>
+
+          <p class="alat-menu-label">MENU LAYANAN</p>
+
+          <nav class="alat-menu" aria-label="Menu layanan alat">
+            <a href="index.html" data-page="beranda">
+              Beranda
+            </a>
+
+            <a
+              href="konten.html"
+              class=""
+              
+              data-page="katalog"
+            >
+              Katalog Alat
+            </a>
+
+            <a href="form.html" data-page="form" class="selected" aria-current="page">
+              Pengajuan Peminjaman
+            </a>
+          </nav>
+
+          <div class="alat-sidebar-note">
+            <strong>Peminjaman gratis</strong>
+            <p>
+              Pilih alat sesuai kebutuhan. Peminjaman alat
+              tidak memerlukan surat permohonan.
+            </p>
+          </div>
+        </aside>
+
+        <!-- KONTEN KATALOG -->
+        <div class="alat-main"><p class="alat-breadcrumb">
   Layanan Mahasiswa / Pengajuan Peminjaman
 </p>
 
@@ -112,7 +189,7 @@
 
   <div class="pinjam-actions">
     <a
-      href="pages/konten.html"
+      href="konten.html"
       class="button button-secondary"
       data-page="katalog"
     >
@@ -127,4 +204,25 @@
       Kirim Pengajuan
     </button>
   </div>
-</form>
+</form></div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>SIPTA</strong>
+        <p>Sistem Peminjaman dan Sewa Alat dan Ruangan</p>
+      </div>
+
+      <p>
+        Fakultas Vokasi<br>
+        Universitas Negeri Surabaya
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
