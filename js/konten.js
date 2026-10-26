@@ -22,15 +22,6 @@ window.dataAlat = [
   },
   {
     id: 3,
-    nama: "Stop Kontak",
-    deskripsi: "Stop kontak tambahan untuk menghubungkan perangkat ke sumber listrik.",
-    stok: 0,
-    kondisi: "Baik",
-    kategori: "Kelistrikan",
-    gambar: "img/stopkontak.jpg"
-  },
-  {
-    id: 4,
     nama: "Speaker",
     deskripsi: "Pengeras suara untuk mendukung kegiatan akademik.",
     stok: 2,
@@ -39,13 +30,22 @@ window.dataAlat = [
     gambar: "img/speaker.jpg"
   },
   {
-    id: 5,
+    id: 4,
     nama: "Mic",
     deskripsi: "Mikrofon untuk presentasi, diskusi, dan kegiatan akademik.",
     stok: 4,
     kondisi: "Baik",
     kategori: "Audio",
     gambar: "img/mic.jpg"
+  },
+  {
+    id: 5,
+    nama: "Stop Kontak",
+    deskripsi: "Stop kontak tambahan untuk menghubungkan perangkat ke sumber listrik.",
+    stok: 0,
+    kondisi: "Baik",
+    kategori: "Kelistrikan",
+    gambar: "img/stop-kontak.jpg"
   }
 ];
 
