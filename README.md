@@ -12,25 +12,32 @@ Pada tugas UTS Pemrograman Web ini, saya mengambil bagian peminjaman alat dari p
 
 Website ini saya buat untuk memudahkan pengguna melihat alat yang tersedia dan mengisi pengajuan peminjaman. Bagian yang saya kerjakan terdiri dari beranda, katalog alat, dan Pengajuan Peminjaman. Untuk peminjaman alat, pengguna tidak dikenakan biaya dan tidak perlu mengunggah surat permohonan.
 
-Tampilan dan halaman yang saya buat
-1. Beranda
-Saya membuat beranda dengan tampilan dashboard dan menu di sebelah kiri atau sidebar, mengikuti acuan wireframe pada proposal. Menu yang tersedia adalah Beranda, Katalog Alat, dan Pengajuan Peminjaman.
+## Tampilan dan Halaman 
+### 1. Beranda
 
-Pada beranda, saya menampilkan jumlah jenis alat, total unit, unit yang tersedia, dan tabel ketersediaan alat. Angka tersebut diambil dari database, sehingga mengikuti data yang ada di MySQL. Saya juga menambahkan tombol untuk membuka katalog dan pengajuanagar pengguna lebih mudah melanjutkan ke halaman yang dibutuhkan.
+Saya membuat beranda dengan tampilan dashboard dan menu di sebelah kiri atau sidebar, mengikuti acuan wireframe pada proposal. Menu yang tersedia adalah **Beranda**, **Katalog Alat**, dan **Pengajuan Peminjaman**.
 
-2. Katalog alat
-Pada halaman katalog, saya menampilkan foto, nama, spesifikasi, kondisi, dan stok alat. Data awal alatnya terdiri dari Proyektor, HDMI, Stop Kontak, Speaker, dan Mic.
+Pada beranda, saya menampilkan jumlah jenis alat, total unit, unit yang tersedia, dan tabel ketersediaan alat. Informasi tersebut diambil dari database, sehingga mengikuti data yang ada di MySQL.
 
-Saya menambahkan kolom pencarian agar pengguna dapat mencari alat berdasarkan nama atau deskripsinya. Selain itu, ada filter untuk menampilkan semua alat, alat yang tersedia, atau alat yang stoknya habis. Tombol Reset digunakan untuk mengembalikan pencarian dan filter ke kondisi awal.
+Saya juga menambahkan tombol untuk membuka katalog dan halaman pengajuan agar pengguna lebih mudah melanjutkan ke halaman yang dibutuhkan.
 
-Setiap alat yang masih tersedia memiliki tombol Pinjam Alat. Ketika tombol tersebut dipilih, pengguna diarahkan ke pengajuandan alat yang dipilih otomatis tercentang. Jika stoknya habis, tombol peminjaman tidak dapat digunakan.
+### 2. Katalog Alat
 
-3. Pengajuan peminjaman
-Pada Pengajuan, pengguna dapat memilih lebih dari satu jenis alat dan menentukan jumlah unitnya. Pengguna juga perlu mengisi tanggal pinjam, tanggal rencana kembali, serta keperluan peminjaman.
+Pada halaman katalog, saya menampilkan foto, nama, spesifikasi, kondisi, dan stok alat. Data awal alat terdiri dari Proyektor, HDMI, Stop Kontak, Speaker, dan Mic.
 
-Di bagian bawah formulir, saya menampilkan ringkasan jumlah jenis alat dan total unit yang dipilih. Untuk biaya, saya menampilkan keterangan Gratis sesuai aturan peminjaman alat pada proposal.
+Saya menambahkan kolom pencarian agar pengguna dapat mencari alat berdasarkan nama atau deskripsinya. Selain itu, tersedia filter untuk menampilkan semua alat, alat yang tersedia, atau alat yang stoknya habis. Tombol **Reset** digunakan untuk mengembalikan pencarian dan filter ke kondisi awal.
 
-Isian pengajuansaya sesuaikan dengan rancangan tabel peminjaman_alat dan detail_peminjaman_alat. Tanggal dan keperluan merupakan bagian dari data pengajuan, sedangkan ID alat dan jumlah unit merupakan bagian dari detail peminjaman. Namun, penyimpanan pengajuan pada versi ini masih menggunakan sesi PHP.
+Setiap alat yang masih tersedia memiliki tombol **Pinjam Alat**. Ketika tombol tersebut dipilih, pengguna diarahkan ke halaman pengajuan dan alat yang dipilih otomatis tercentang. Jika stoknya habis, tombol peminjaman tidak dapat digunakan.
+
+### 3. Pengajuan Peminjaman
+
+Pada halaman pengajuan, pengguna dapat memilih lebih dari satu jenis alat dan menentukan jumlah unitnya. Pengguna juga perlu mengisi tanggal pinjam, tanggal rencana kembali, serta keperluan peminjaman.
+
+Di bagian bawah formulir, saya menampilkan ringkasan jumlah jenis alat dan total unit yang dipilih. Untuk biaya, saya menampilkan keterangan **Gratis** sesuai aturan peminjaman alat pada proposal.
+
+Isian pengajuan saya sesuaikan dengan rancangan tabel `peminjaman_alat` dan `detail_peminjaman_alat`. Tanggal dan keperluan merupakan bagian dari data pengajuan, sedangkan ID alat dan jumlah unit merupakan bagian dari detail peminjaman.
+
+Namun, penyimpanan pengajuan pada versi ini masih menggunakan **sesi PHP**, sehingga belum disimpan ke tabel transaksi di MySQL.
 
 ## Tampilan Website
 
