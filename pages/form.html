@@ -6,21 +6,19 @@
 
   <meta
     name="description"
-    content="Katalog alat dan layanan peminjaman alat Fakultas Vokasi UNESA."
+    content="Pengajuan peminjaman alat Fakultas Vokasi UNESA."
   >
 
   <title>Pengajuan Peminjaman — SIPTA</title>
 
-  <!-- CSS utama berada di folder utama proyek -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../style.css">
 
-  <!-- JavaScript berada di folder js -->
-  <script src="konten.js" defer></script>
-  <script src="validasi.js" defer></script>
-  <script src="main.js" defer></script>
+  <script src="../js/konten.js" defer></script>
+  <script src="../js/validasi.js" defer></script>
+  <script src="../js/main.js" defer></script>
 </head>
 
-<body data-page="form">
+<body class="mode-layanan">
   <a class="skip-link" href="#main-content">
     Lewati ke konten utama
   </a>
@@ -34,9 +32,12 @@
           <div class="alat-sidebar-title">
             <a
               class="alat-sidebar-icon"
-              href="index.html"
+              href="../index.html"
+              data-page="beranda"
               aria-label="SIPTA Beranda"
-            >S</a>
+            >
+              S
+            </a>
 
             <div>
               <strong>SIPTA</strong>
@@ -47,20 +48,20 @@
           <p class="alat-menu-label">MENU LAYANAN</p>
 
           <nav class="alat-menu" aria-label="Menu layanan alat">
-            <a href="index.html" data-page="beranda">
+            <a href="../index.html" data-page="beranda">
               Beranda
             </a>
 
-            <a
-              href="konten.html"
-              class=""
-              
-              data-page="katalog"
-            >
+            <a href="konten.html" data-page="katalog">
               Katalog Alat
             </a>
 
-            <a href="form.html" data-page="form" class="selected" aria-current="page">
+            <a
+              href="form.html"
+              class="selected"
+              aria-current="page"
+              data-page="form"
+            >
               Pengajuan Peminjaman
             </a>
           </nav>
@@ -74,155 +75,172 @@
           </div>
         </aside>
 
-        <!-- KONTEN KATALOG -->
-        <div class="alat-main"><p class="alat-breadcrumb">
-  Layanan Mahasiswa / Pengajuan Peminjaman
-</p>
+        <!-- KONTEN FORMULIR -->
+        <div class="alat-main">
+          <p class="alat-breadcrumb">
+            Layanan Mahasiswa / Pengajuan Peminjaman
+          </p>
 
-<div class="alat-heading">
-  <div>
-    <p class="eyebrow">LAYANAN PEMINJAMAN ALAT</p>
-    <h1>Pengajuan Peminjaman</h1>
-    <p>
-      Pilih alat dan lengkapi kebutuhan peminjamanmu.
-      Semua kolom bertanda * wajib diisi.
-    </p>
-  </div>
-  <span class="alat-free-label">Tanpa biaya</span>
-</div>
+          <div class="alat-heading">
+            <div>
+              <p class="eyebrow">LAYANAN PEMINJAMAN ALAT</p>
+              <h1>Pengajuan Peminjaman</h1>
+              <p>
+                Pilih alat dan lengkapi kebutuhan peminjamanmu.
+                Semua kolom bertanda * wajib diisi.
+              </p>
+            </div>
 
-<div class="alat-demo-note">
-  Simulasi UTS: data alat menggunakan stok contoh.
-  Pengajuan disimpan sementara dalam sesi PHP, belum ke database.
-</div>
+            <span class="alat-free-label">Tanpa biaya</span>
+          </div>
 
-<form
-  id="form-peminjaman"
-  class="pinjam-form"
-  action="process.php"
-  method="post"
->
-  <fieldset class="pinjam-section">
-    <legend>1. Pilih alat *</legend>
+          <noscript>
+            <p class="pinjam-message gagal">
+              Aktifkan JavaScript agar daftar alat dan formulir
+              peminjaman dapat digunakan.
+            </p>
+          </noscript>
 
-    <p class="pinjam-help">
-      Kamu dapat memilih lebih dari satu jenis alat.
-      Centang alat, lalu tentukan jumlah unitnya.
-    </p>
+          <form
+            id="form-peminjaman"
+            class="pinjam-form"
+            action="../process.php"
+            method="post"
+          >
+            <!-- PILIH ALAT -->
+            <fieldset class="pinjam-section">
+              <legend>1. Pilih alat *</legend>
 
-    <div id="pilihan-alat" class="pinjam-alat-list"></div>
-  </fieldset>
+              <p class="pinjam-help">
+                Kamu dapat memilih lebih dari satu jenis alat.
+                Centang alat, lalu tentukan jumlah unitnya.
+              </p>
 
-  <fieldset class="pinjam-section">
-    <legend>2. Jadwal peminjaman *</legend>
+              <!-- Diisi oleh fungsi initForm di validasi.js -->
+              <div
+                id="pilihan-alat"
+                class="pinjam-alat-list"
+              ></div>
+            </fieldset>
 
-    <div class="pinjam-grid">
-      <div class="pinjam-field">
-        <label for="tgl-pinjam">Tanggal pinjam *</label>
-        <input
-          type="date"
-          id="tgl-pinjam"
-          name="tgl_pinjam"
-          required
-        >
-      </div>
+            <!-- JADWAL PEMINJAMAN -->
+            <fieldset class="pinjam-section">
+              <legend>2. Jadwal peminjaman *</legend>
 
-      <div class="pinjam-field">
-        <label for="tgl-kembali">Tanggal rencana kembali *</label>
-        <input
-          type="date"
-          id="tgl-kembali"
-          name="tgl_kembali_rencana"
-          required
-        >
-      </div>
-    </div>
+              <div class="pinjam-grid">
+                <div class="pinjam-field">
+                  <label for="tgl-pinjam">
+                    Tanggal pinjam *
+                  </label>
 
-    <p id="info-durasi" class="pinjam-help" aria-live="polite">
-      Pilih tanggal pinjam dan tanggal rencana kembali.
-    </p>
-  </fieldset>
+                  <input
+                    type="date"
+                    id="tgl-pinjam"
+                    name="tgl_pinjam"
+                    required
+                  >
+                </div>
 
-  <fieldset class="pinjam-section">
-    <legend>3. Keperluan peminjaman *</legend>
+                <div class="pinjam-field">
+                  <label for="tgl-kembali">
+                    Tanggal rencana kembali *
+                  </label>
 
-    <div class="pinjam-field">
-      <label for="keperluan">Jelaskan kegiatanmu</label>
-      <textarea
-        id="keperluan"
-        name="keperluan"
-        rows="4"
-        maxlength="1000"
-        placeholder="Contoh: Presentasi tugas mata kuliah Pemrograman Web."
-        required
-      ></textarea>
-    </div>
-  </fieldset>
+                  <input
+                    type="date"
+                    id="tgl-kembali"
+                    name="tgl_kembali_rencana"
+                    required
+                  >
+                </div>
+              </div>
 
-  <div class="pinjam-summary">
-    <div>
-      <span>Alat yang dipilih</span>
-      <strong id="ringkasan-alat" aria-live="polite">
-        Belum ada alat dipilih
-      </strong>
-    </div>
+              <p
+                id="info-durasi"
+                class="pinjam-help"
+                aria-live="polite"
+              >
+                Pilih tanggal pinjam dan tanggal rencana kembali.
+              </p>
+            </fieldset>
 
-    <div>
-      <span>Biaya peminjaman</span>
-      <strong class="alat-free">Gratis</strong>
-    </div>
-  </div>
+            <!-- KEPERLUAN PEMINJAMAN -->
+            <fieldset class="pinjam-section">
+              <legend>3. Keperluan peminjaman *</legend>
 
-  <p class="pinjam-help">
-    Pengajuan akan berstatus “Menunggu” hingga diproses admin.
-    Peminjaman alat tidak memerlukan surat permohonan.
-  </p>
+              <div class="pinjam-field">
+                <label for="keperluan">
+                  Jelaskan kegiatanmu *
+                </label>
 
-  <div
-    id="form-pesan"
-    class="pinjam-message"
-    role="status"
-    aria-live="polite"
-    tabindex="-1"
-    hidden
-  ></div>
+                <textarea
+                  id="keperluan"
+                  name="keperluan"
+                  rows="4"
+                  maxlength="1000"
+                  placeholder="Contoh: Presentasi tugas mata kuliah Pemrograman Web."
+                  required
+                ></textarea>
+              </div>
+            </fieldset>
 
-  <div class="pinjam-actions">
-    <a
-      href="konten.html"
-      class="button button-secondary"
-      data-page="katalog"
-    >
-      Kembali ke Katalog
-    </a>
+            <!-- RINGKASAN -->
+            <div class="pinjam-summary">
+              <div>
+                <span>Alat yang dipilih</span>
 
-    <button
-      type="submit"
-      id="kirim-pengajuan"
-      class="button button-primary"
-    >
-      Kirim Pengajuan
-    </button>
-  </div>
-</form></div>
+                <strong
+                  id="ringkasan-alat"
+                  aria-live="polite"
+                >
+                  Belum ada alat dipilih
+                </strong>
+              </div>
+
+              <div>
+                <span>Biaya peminjaman</span>
+                <strong class="alat-free">Gratis</strong>
+              </div>
+            </div>
+
+            <p class="pinjam-help">
+              Pengajuan akan berstatus “Menunggu” hingga diproses
+              admin.
+            </p>
+
+            <!-- PESAN VALIDASI DAN HASIL PENGAJUAN -->
+            <div
+              id="form-pesan"
+              class="pinjam-message"
+              role="status"
+              aria-live="polite"
+              tabindex="-1"
+              hidden
+            ></div>
+
+            <!-- TOMBOL AKSI -->
+            <div class="pinjam-actions">
+              <a
+                href="konten.html"
+                class="button button-secondary"
+                data-page="katalog"
+              >
+                Kembali ke Katalog
+              </a>
+
+              <button
+                type="submit"
+                id="kirim-pengajuan"
+                class="button button-primary"
+              >
+                Kirim Pengajuan
+              </button>
+            </div>
+          </form>
+        </div>
 
       </div>
     </section>
   </main>
-
-  <!-- FOOTER -->
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div>
-        <strong>SIPTA</strong>
-        <p>Sistem Peminjaman dan Sewa Alat dan Ruangan</p>
-      </div>
-
-      <p>
-        Fakultas Vokasi<br>
-        Universitas Negeri Surabaya
-      </p>
-    </div>
-  </footer>
 </body>
 </html>

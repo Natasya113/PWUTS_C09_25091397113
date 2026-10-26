@@ -5,15 +5,31 @@ session_start();
 date_default_timezone_set('Asia/Jakarta');
 
 header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store');
 
 function gagal(string $pesan, int $kode = 422): void
 {
     http_response_code($kode);
+
     echo json_encode([
         'success' => false,
         'message' => $pesan
     ], JSON_UNESCAPED_UNICODE);
+
     exit;
+}
+
+function tanggalValid(string $nilai): bool
+{
+    // Cegah format tambahan atau karakter tidak valid.
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $nilai)) {
+        return false;
+    }
+
+    $tanggal = DateTimeImmutable::createFromFormat('!Y-m-d', $nilai);
+
+    return $tanggal !== false &&
+        $tanggal->format('Y-m-d') === $nilai;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -21,14 +37,31 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     gagal('Gunakan formulir untuk mengirim pengajuan.', 405);
 }
 
-/* Data contoh harus sama dengan konten.js. */
-$alat = [
-    1 => ['nama' => 'Proyektor', 'stok' => 3],
-    2 => ['nama' => 'HDMI', 'stok' => 5],
-    3 => ['nama' => 'Speaker', 'stok' => 2],
-    4 => ['nama' => 'Mic', 'stok' => 4],
-    5 => ['nama' => 'Stop Kontak', 'stok' => 0]
-];
+/* Baca stok terbaru dari MySQL. */
+try {
+    require __DIR__ . '/koneksi.php';
+
+    $query = $pdo->query(
+        'SELECT id_alat, nama_alat, jumlah_tersedia
+         FROM alat'
+    );
+
+    $alat = [];
+
+    foreach ($query as $row) {
+        $alat[(int) $row['id_alat']] = [
+            'nama' => $row['nama_alat'],
+            'stok' => (int) $row['jumlah_tersedia']
+        ];
+    }
+} catch (Throwable $error) {
+    error_log($error->getMessage());
+
+    gagal(
+        'Stok alat belum dapat diperiksa. Pastikan MySQL aktif.',
+        500
+    );
+}
 
 $jumlah = $_POST['jumlah'] ?? [];
 
@@ -45,8 +78,20 @@ foreach ($jumlah as $id => $nilai) {
 
     $unit = filter_var($nilai, FILTER_VALIDATE_INT);
 
-    if ($unit === false || $unit < 1 || $unit > $alat[$id]['stok']) {
-        gagal('Jumlah ' . $alat[$id]['nama'] . ' tidak sesuai stok.');
+    if ($unit === false || $unit < 1) {
+        gagal(
+            'Jumlah ' . $alat[$id]['nama'] .
+            ' harus berupa bilangan bulat minimal 1.'
+        );
+    }
+
+    if ($unit > $alat[$id]['stok']) {
+        gagal(
+            'Jumlah ' . $alat[$id]['nama'] .
+            ' melebihi stok terbaru. Tersedia ' .
+            $alat[$id]['stok'] .
+            ' unit. Buka kembali formulir untuk memperbarui stok.'
+        );
     }
 
     $detail[] = [
@@ -66,14 +111,6 @@ if (
     !is_string($keperluan)
 ) {
     gagal('Format data formulir tidak valid.');
-}
-
-function tanggalValid(string $nilai): bool
-{
-    $tanggal = DateTimeImmutable::createFromFormat('!Y-m-d', $nilai);
-
-    return $tanggal !== false &&
-        $tanggal->format('Y-m-d') === $nilai;
 }
 
 if (!tanggalValid($pinjam) || !tanggalValid($kembali)) {
@@ -102,7 +139,8 @@ if ($panjang === false || $panjang > 1000) {
     gagal('Keperluan maksimal 1.000 karakter.');
 }
 
-$kode = 'ALT-' . date('Ymd') . '-' . strtoupper(bin2hex(random_bytes(3)));
+$kode = 'ALT-' . date('Ymd') . '-' .
+    strtoupper(bin2hex(random_bytes(3)));
 
 $pengajuan = [
     'kode' => $kode,
@@ -111,14 +149,19 @@ $pengajuan = [
     'tgl_kembali_rencana' => $kembali,
     'keperluan' => $keperluan,
     'detail' => $detail,
-    'status' => 'Menunggu'
+    'status' => 'menunggu'
 ];
 
 /*
- * Penyimpanan sementara untuk simulasi.
- * Belum terhubung ke pengguna login maupun database MySQL.
+ * Data alat dan validasi stok menggunakan MySQL.
+ * Pengajuan disimpan sementara dalam sesi PHP.
+ * Pengajuan belum ditulis ke tabel transaksi.
  * Stok tidak dikurangi ketika pengajuan masih menunggu.
  */
+if (!isset($_SESSION['pengajuan_alat'])) {
+    $_SESSION['pengajuan_alat'] = [];
+}
+
 $_SESSION['pengajuan_alat'][] = $pengajuan;
 
 session_write_close();
@@ -126,5 +169,5 @@ session_write_close();
 echo json_encode([
     'success' => true,
     'kode' => $kode,
-    'status' => 'Menunggu'
+    'status' => 'menunggu'
 ], JSON_UNESCAPED_UNICODE);

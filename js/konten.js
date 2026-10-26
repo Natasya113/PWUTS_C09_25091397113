@@ -1,55 +1,41 @@
 "use strict";
 
-/* Data dan stok contoh untuk simulasi UTS. */
-window.dataAlat = [
-  {
-    id: 1,
-    nama: "Proyektor",
-    deskripsi: "Proyektor untuk presentasi dan kegiatan pembelajaran.",
-    stok: 3,
-    kondisi: "Baik",
-    kategori: "Presentasi",
-    gambar: "img/proyektor.jpg"
-  },
-  {
-    id: 2,
-    nama: "HDMI",
-    deskripsi: "Kabel HDMI untuk menghubungkan laptop dengan proyektor atau layar.",
-    stok: 5,
-    kondisi: "Baik",
-    kategori: "Kabel",
-    gambar: "img/hdmi.jpg"
-  },
-  {
-    id: 3,
-    nama: "Speaker",
-    deskripsi: "Pengeras suara untuk mendukung kegiatan akademik.",
-    stok: 2,
-    kondisi: "Baik",
-    kategori: "Audio",
-    gambar: "img/speaker.jpg"
-  },
-  {
-    id: 4,
-    nama: "Mic",
-    deskripsi: "Mikrofon untuk presentasi, diskusi, dan kegiatan akademik.",
-    stok: 4,
-    kondisi: "Baik",
-    kategori: "Audio",
-    gambar: "img/mic.jpg"
-  },
-  {
-    id: 5,
-    nama: "Stop Kontak",
-    deskripsi: "Stop kontak tambahan untuk menghubungkan perangkat ke sumber listrik.",
-    stok: 0,
-    kondisi: "Baik",
-    kategori: "Kelistrikan",
-    gambar: "img/stop-kontak.jpg"
-  }
-];
+// konten.js berada di folder js/.
+window.SIPTA_ROOT = new URL("../", document.currentScript.src);
+window.dataAlat = [];
 
-/* Menjalankan katalog setelah halaman dimuat melalui Ajax. */
+window.amanHTML = function (nilai) {
+  return String(nilai ?? "").replace(/[&<>"']/g, function (karakter) {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[karakter];
+  });
+};
+
+window.muatDataAlat = async function (signal) {
+  const response = await fetch(
+    new URL("alat.php", window.SIPTA_ROOT),
+    {
+      cache: "no-store",
+      signal: signal
+    }
+  );
+
+  const hasil = await response.json();
+
+  if (!response.ok || !hasil.success || !Array.isArray(hasil.data)) {
+    throw new Error(hasil.message || "Data alat gagal dimuat.");
+  }
+
+  if (signal && signal.aborted) return;
+
+  window.dataAlat = hasil.data;
+};
+
 window.initKatalog = function () {
   const search = document.getElementById("search-alat");
   const filter = document.getElementById("filter-stok");
@@ -62,6 +48,8 @@ window.initKatalog = function () {
     return;
   }
 
+  const aman = window.amanHTML;
+
   function tampilkanAlat() {
     const keyword = search.value.trim().toLowerCase();
     const pilihan = filter.value;
@@ -69,32 +57,37 @@ window.initKatalog = function () {
     const hasil = window.dataAlat.filter(function (alat) {
       const teks = `${alat.nama} ${alat.deskripsi}`.toLowerCase();
 
-      const cocokKata = teks.includes(keyword);
-
       const cocokStok =
         pilihan === "semua" ||
         (pilihan === "tersedia" && alat.stok > 0) ||
         (pilihan === "habis" && alat.stok === 0);
 
-      return cocokKata && cocokStok;
+      return teks.includes(keyword) && cocokStok;
     });
 
-    // Isi kartu berasal dari data contoh tetap di atas.
     list.innerHTML = hasil.map(function (alat) {
       const tersedia = alat.stok > 0;
 
+      const tujuan = new URL("pages/form.html", window.SIPTA_ROOT);
+      tujuan.searchParams.set("alat", alat.id);
+
+      const foto = alat.gambar
+        ? `
+          <img
+            src="${aman(new URL(alat.gambar, window.SIPTA_ROOT).href)}"
+            alt="${aman(alat.nama)}"
+            width="320"
+            height="200"
+            loading="lazy"
+            decoding="async"
+          >
+        `
+        : '<span>Foto alat belum tersedia</span>';
+
       return `
         <article class="alat-card alat-card-foto">
-
           <div class="alat-photo">
-            <img
-              src="${alat.gambar}"
-              alt="${alat.nama}"
-              width="320"
-              height="200"
-              loading="lazy"
-              decoding="async"
-            >
+            ${foto}
 
             <span class="alat-status ${
               tersedia ? "is-available" : "is-empty"
@@ -107,21 +100,20 @@ window.initKatalog = function () {
             <div class="alat-card-header">
               <div class="alat-card-title">
                 <span class="alat-category">
-                  ${alat.kategori}
+                  ${aman(alat.kategori)}
                 </span>
-
-                <h3>${alat.nama}</h3>
+                <h3>${aman(alat.nama)}</h3>
               </div>
             </div>
 
             <p class="alat-description">
-              ${alat.deskripsi}
+              ${aman(alat.deskripsi)}
             </p>
 
             <dl class="alat-specs">
               <div>
                 <dt>Kondisi</dt>
-                <dd>${alat.kondisi}</dd>
+                <dd>${aman(alat.kondisi)}</dd>
               </div>
 
               <div>
@@ -139,11 +131,11 @@ window.initKatalog = function () {
               tersedia
                 ? `
                   <a
-                    href="form.html?alat=${alat.id}"
+                    href="${aman(tujuan.href)}"
                     class="button button-primary alat-pinjam"
                     data-page="form"
                     data-alat-id="${alat.id}"
-                    aria-label="Pinjam ${alat.nama}"
+                    aria-label="Pinjam ${aman(alat.nama)}"
                   >
                     Pinjam Alat
                     <span aria-hidden="true">→</span>
@@ -160,7 +152,6 @@ window.initKatalog = function () {
                 `
             }
           </div>
-
         </article>
       `;
     }).join("");
@@ -171,11 +162,13 @@ window.initKatalog = function () {
     empty.hidden = hasil.length !== 0;
   }
 
+  // Foto yang belum tersedia tidak menampilkan ikon gambar rusak.
   list.addEventListener("error", function (event) {
-    if (event.target.tagName === "IMG") {
-      event.target.hidden = true;
-      event.target.parentElement.classList.add("foto-tidak-ada");
-    }
+    if (event.target.tagName !== "IMG") return;
+
+    const pengganti = document.createElement("span");
+    pengganti.textContent = "Foto alat belum tersedia";
+    event.target.replaceWith(pengganti);
   }, true);
 
   search.addEventListener("input", tampilkanAlat);

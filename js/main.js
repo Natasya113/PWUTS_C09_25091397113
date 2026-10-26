@@ -1,46 +1,90 @@
 "use strict";
 
 const mainContent = document.getElementById("main-content");
-const halamanAwal = document.body.dataset.page || "beranda";
-const berandaHTML = halamanAwal === "beranda" ? mainContent.innerHTML : null;
+const rootURL = window.SIPTA_ROOT;
+
+const alamatHalaman = {
+  beranda: new URL("index.html", rootURL).href,
+  katalog: new URL("pages/konten.html", rootURL).href,
+  form: new URL("pages/form.html", rootURL).href
+};
 
 let requestAktif = null;
 
-/* Mengatur tampilan landing page atau halaman layanan. */
+
+/* =========================================================
+   1. TAMPILAN DAN MENU AKTIF
+   ========================================================= */
+
 function aturTampilan(page) {
-  document.body.classList.toggle("mode-layanan", page !== "beranda");
-
-  document.querySelectorAll(".navigation .nav-link").forEach(function (link) {
-    const tujuan = link.dataset.page || "beranda";
-    const aktif = tujuan === page;
-
-    link.classList.toggle("active", aktif);
-
-    if (aktif) {
-      link.setAttribute("aria-current", "page");
-    } else {
-      link.removeAttribute("aria-current");
-    }
-  });
+  // Semua halaman sekarang menggunakan sidebar.
+  document.body.classList.add("mode-layanan");
 
   const judul = {
-    beranda: "SIPTA — Peminjaman Alat",
+    beranda: "Beranda — SIPTA",
     katalog: "Katalog Alat — SIPTA",
     form: "Pengajuan Peminjaman — SIPTA"
   };
 
-  document.title = judul[page];
+  document.title = judul[page] || "SIPTA";
+
+  document.querySelectorAll("a[data-page]").forEach(function (link) {
+    const tujuan = link.dataset.page;
+
+    if (alamatHalaman[tujuan]) {
+      const url = new URL(alamatHalaman[tujuan]);
+
+      if (link.dataset.alatId) {
+        url.searchParams.set("alat", link.dataset.alatId);
+      }
+
+      link.href = url.href;
+    }
+
+    const aktif = tujuan === page;
+
+    if (link.classList.contains("nav-link")) {
+      link.classList.toggle("active", aktif);
+    }
+
+    if (link.closest(".alat-menu")) {
+      link.classList.toggle("selected", aktif);
+    }
+
+    if (
+      link.classList.contains("nav-link") ||
+      link.closest(".alat-menu")
+    ) {
+      if (aktif) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    }
+  });
 }
 
-/* Kerangka sidebar untuk halaman pengajuan dan pesan pemuatan. */
-function buatLayoutLayanan(page, isi) {
+
+/* =========================================================
+   2. KERANGKA SIDEBAR
+   ========================================================= */
+
+function buatLayoutLayanan(isi) {
   return `
     <section class="alat-page">
       <div class="alat-layout">
 
         <aside class="alat-sidebar">
           <div class="alat-sidebar-title">
-            <span class="alat-sidebar-icon" aria-hidden="true">S</span>
+            <a
+              class="alat-sidebar-icon"
+              href="${alamatHalaman.beranda}"
+              data-page="beranda"
+              aria-label="SIPTA Beranda"
+            >
+              S
+            </a>
+
             <div>
               <strong>SIPTA</strong>
               <small>Layanan mahasiswa</small>
@@ -50,26 +94,23 @@ function buatLayoutLayanan(page, isi) {
           <p class="alat-menu-label">MENU LAYANAN</p>
 
           <nav class="alat-menu" aria-label="Menu layanan alat">
-            <a href="index.html" data-page="beranda">
+            <a
+              href="${alamatHalaman.beranda}"
+              data-page="beranda"
+            >
               Beranda
             </a>
 
             <a
-              href="konten.html"
+              href="${alamatHalaman.katalog}"
               data-page="katalog"
-              ${page === "katalog"
-                ? 'class="selected" aria-current="page"'
-                : ""}
             >
               Katalog Alat
             </a>
 
             <a
-              href="form.html"
+              href="${alamatHalaman.form}"
               data-page="form"
-              ${page === "form"
-                ? 'class="selected" aria-current="page"'
-                : ""}
             >
               Pengajuan Peminjaman
             </a>
@@ -77,9 +118,10 @@ function buatLayoutLayanan(page, isi) {
 
           <div class="alat-sidebar-note">
             <strong>Peminjaman gratis</strong>
+
             <p>
-              Pilih alat sesuai kebutuhan.
-              Peminjaman alat tidak memerlukan surat permohonan.
+              Pilih alat sesuai kebutuhan. Peminjaman alat
+              tidak memerlukan surat permohonan.
             </p>
           </div>
         </aside>
@@ -93,32 +135,175 @@ function buatLayoutLayanan(page, isi) {
   `;
 }
 
-/* Memuat konten halaman menggunakan Ajax. */
-async function muatHalaman(page, alatId) {
-  const halaman = {
-    katalog: "konten.html",
-    form: "form.html"
-  };
 
-  if (page !== "beranda" && !halaman[page]) return;
+/* =========================================================
+   3. DATA BERANDA DASHBOARD
+   ========================================================= */
 
-  if (requestAktif) {
-    requestAktif.abort();
-    requestAktif = null;
+function initBeranda() {
+  const jenis = document.getElementById("home-jenis");
+  const total = document.getElementById("home-total");
+  const tersedia = document.getElementById("home-tersedia");
+  const daftar = document.getElementById("home-daftar-alat");
+
+  if (!jenis || !total || !tersedia || !daftar) {
+    return;
   }
 
-  mainContent.removeAttribute("aria-busy");
+  const alat = window.dataAlat;
+  const aman = window.amanHTML;
+
+  jenis.textContent = alat.length;
+
+  total.textContent = alat.reduce(function (jumlah, item) {
+    return jumlah + item.stokTotal;
+  }, 0);
+
+  tersedia.textContent = alat.reduce(function (jumlah, item) {
+    return jumlah + item.stok;
+  }, 0);
+
+  if (!alat.length) {
+    daftar.innerHTML = `
+      <tr>
+        <td colspan="5">Belum ada data alat.</td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  daftar.innerHTML = alat.map(function (item) {
+    const adaStok = item.stok > 0;
+
+    return `
+      <tr>
+        <td>
+          <strong>${aman(item.nama)}</strong>
+        </td>
+
+        <td>${aman(item.kondisi)}</td>
+
+        <td>${item.stokTotal}</td>
+
+        <td>${item.stok}</td>
+
+        <td>
+          <span class="dashboard-badge ${
+            adaStok ? "available" : "empty"
+          }">
+            ${adaStok ? "Tersedia" : "Stok habis"}
+          </span>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+
+/* =========================================================
+   4. PESAN GAGAL MEMUAT HALAMAN
+   ========================================================= */
+
+function tampilkanGagal(error, page) {
+  mainContent.innerHTML = buatLayoutLayanan(`
+    <div role="alert">
+      <p class="eyebrow">INFORMASI LAYANAN</p>
+
+      <h1>Halaman belum dapat dimuat</h1>
+
+      <p>
+        Pastikan Apache dan MySQL aktif, database sipta tersedia,
+        serta file website berada di folder yang benar.
+      </p>
+
+      <div class="dashboard-actions">
+        <a
+          href="${alamatHalaman[page]}"
+          class="button button-primary"
+          data-page="${page}"
+        >
+          Coba lagi
+        </a>
+
+        <a
+          href="${alamatHalaman.beranda}"
+          class="button button-secondary"
+          data-page="beranda"
+        >
+          Kembali ke Beranda
+        </a>
+      </div>
+    </div>
+  `);
+
+  aturTampilan(page);
+  mainContent.focus({ preventScroll: true });
+
+  console.error(error);
+}
+
+
+/* =========================================================
+   5. AKTIFKAN BERANDA, KATALOG, ATAU FORMULIR
+   ========================================================= */
+
+async function aktifkanHalaman(page, alatId, controller) {
   aturTampilan(page);
 
-  if (page === "beranda") {
-    if (berandaHTML === null) {
-      window.location.href = "index.html";
-      return;
-    }
-    mainContent.innerHTML = berandaHTML;
-    window.scrollTo(0, 0);
-    mainContent.focus({ preventScroll: true });
+  const tombol = document.getElementById("kirim-pengajuan");
+
+  if (tombol) {
+    tombol.disabled = true;
+    tombol.textContent = "Memuat data alat...";
+  }
+
+  // Ambil data terbaru dari MySQL untuk setiap halaman.
+  await window.muatDataAlat(controller.signal);
+
+  if (controller.signal.aborted) {
     return;
+  }
+
+  if (page === "beranda") {
+    initBeranda();
+  }
+
+  if (page === "katalog") {
+    window.initKatalog();
+  }
+
+  if (page === "form") {
+    const form = document.getElementById("form-peminjaman");
+
+    if (form) {
+      form.action = new URL("process.php", rootURL).href;
+      window.initForm(alatId);
+    }
+
+    if (tombol) {
+      tombol.disabled = false;
+      tombol.textContent = "Kirim Pengajuan";
+    }
+  }
+
+  // Termasuk tombol yang baru dibuat oleh JavaScript.
+  aturTampilan(page);
+}
+
+
+/* =========================================================
+   6. PEMUATAN HALAMAN MELALUI AJAX
+   ========================================================= */
+
+async function muatHalaman(page, alatId) {
+  if (!alamatHalaman[page] || !mainContent) {
+    return;
+  }
+
+  // Hentikan permintaan sebelumnya jika pengguna pindah halaman.
+  if (requestAktif) {
+    requestAktif.abort();
   }
 
   const controller = new AbortController();
@@ -126,110 +311,64 @@ async function muatHalaman(page, alatId) {
 
   mainContent.setAttribute("aria-busy", "true");
 
-  mainContent.innerHTML = buatLayoutLayanan(
-    page,
-    '<p role="status">Memuat halaman...</p>'
-  );
+  mainContent.innerHTML = buatLayoutLayanan(`
+    <p role="status">Memuat halaman...</p>
+  `);
 
+  aturTampilan(page);
   window.scrollTo(0, 0);
 
   try {
-    const response = await fetch(halaman[page], {
+    const response = await fetch(alamatHalaman[page], {
       signal: controller.signal
     });
 
     if (!response.ok) {
-      throw new Error("Halaman gagal dimuat.");
+      throw new Error(
+        `Halaman gagal dimuat (${response.status}).`
+      );
     }
 
     const html = await response.text();
 
-    if (controller.signal.aborted) return;
-
-    if (!html.trim()) {
-      mainContent.innerHTML = buatLayoutLayanan(
-        page,
-        `
-          <p class="alat-breadcrumb">
-            Layanan Mahasiswa / ${
-              page === "form" ? "Pengajuan" : "Katalog"
-            }
-          </p>
-
-          <div class="alat-heading">
-            <div>
-              <p class="eyebrow">LAYANAN PEMINJAMAN ALAT</p>
-
-              <h1>${
-                page === "form"
-                  ? "Pengajuan Peminjaman"
-                  : "Katalog Alat"
-              }</h1>
-
-              <p>
-                Isi halaman ini belum dibuat.
-                Kerangka tampilannya sudah siap.
-              </p>
-            </div>
-          </div>
-
-          <a
-            href="index.html"
-            class="button button-secondary"
-            data-page="beranda"
-          >
-            Kembali ke Beranda
-          </a>
-        `
-      );
-    } else {
-      /*
-       * Katalog saat ini sudah memiliki sidebar.
-       * Formulir yang hanya berisi konten akan otomatis
-       * dibungkus dengan kerangka sidebar yang sama.
-       */
-      const dokumen = new DOMParser().parseFromString(html, "text/html");
-      const konten = dokumen.querySelector("#main-content");
-      const layout = dokumen.querySelector(".alat-page");
-      mainContent.innerHTML = layout
-        ? layout.outerHTML
-        : buatLayoutLayanan(page, konten ? konten.innerHTML : dokumen.body.innerHTML);
-
-      if (page === "katalog") {
-        window.initKatalog();
-      }
-
-      if (page === "form" && typeof window.initForm === "function") {
-        window.initForm(alatId);
-      }
+    if (controller.signal.aborted) {
+      return;
     }
 
-    mainContent.focus({ preventScroll: true });
-  } catch (error) {
-    if (error.name === "AbortError") return;
-
-    mainContent.innerHTML = buatLayoutLayanan(
-      page,
-      `
-        <div role="alert">
-          <h1>Halaman belum dapat dimuat</h1>
-          <p>
-            Periksa file halaman dan JavaScript.
-            Pastikan website dibuka melalui localhost.
-          </p>
-
-          <a
-            href="index.html"
-            class="button button-primary"
-            data-page="beranda"
-          >
-            Kembali ke Beranda
-          </a>
-        </div>
-      `
+    const dokumen = new DOMParser().parseFromString(
+      html,
+      "text/html"
     );
 
-    mainContent.focus({ preventScroll: true });
+    const konten = dokumen.querySelector("#main-content");
+
+    // Ambil bagian utama saja agar dokumen tidak bertumpuk.
+    const isi = konten
+      ? konten.innerHTML
+      : dokumen.body.innerHTML;
+
+    const punyaSidebar = konten
+      ? konten.querySelector(".alat-layout")
+      : dokumen.body.querySelector(".alat-layout");
+
+    mainContent.innerHTML = punyaSidebar
+      ? isi
+      : buatLayoutLayanan(isi);
+
+    await aktifkanHalaman(page, alatId, controller);
+
+    if (!controller.signal.aborted) {
+      mainContent.focus({ preventScroll: true });
+    }
+  } catch (error) {
+    if (
+      error.name === "AbortError" ||
+      controller.signal.aborted
+    ) {
+      return;
+    }
+
+    tampilkanGagal(error, page);
   } finally {
     if (requestAktif === controller) {
       mainContent.removeAttribute("aria-busy");
@@ -238,33 +377,90 @@ async function muatHalaman(page, alatId) {
   }
 }
 
-/* Menangani klik menu, termasuk menu hasil pemuatan Ajax. */
+
+/* =========================================================
+   7. KLIK MENU DAN TOMBOL PINJAM
+   ========================================================= */
+
 document.addEventListener("click", function (event) {
+  if (!(event.target instanceof Element)) {
+    return;
+  }
+
   const link = event.target.closest("a[data-page]");
 
-  if (!link) return;
-
   if (
+    !link ||
+    !mainContent ||
+    event.defaultPrevented ||
     event.ctrlKey ||
     event.metaKey ||
     event.shiftKey ||
     event.altKey ||
-    event.button !== 0
+    event.button !== 0 ||
+    link.hasAttribute("download") ||
+    (link.target && link.target !== "_self")
   ) {
+    return;
+  }
+
+  const page = link.dataset.page;
+
+  if (!alamatHalaman[page]) {
     return;
   }
 
   event.preventDefault();
 
-  muatHalaman(
-    link.dataset.page,
-    link.dataset.alatId
-  );
+  const alatId =
+    link.dataset.alatId ||
+    new URL(link.href).searchParams.get("alat");
+
+  muatHalaman(page, alatId);
 });
 
-/* Inisialisasi juga ketika halaman dibuka langsung. */
-aturTampilan(halamanAwal);
-if (halamanAwal === "katalog") window.initKatalog();
-if (halamanAwal === "form") {
-  window.initForm(new URLSearchParams(window.location.search).get("alat"));
+
+/* =========================================================
+   8. HALAMAN YANG DIBUKA LANGSUNG
+   ========================================================= */
+
+async function mulaiHalaman() {
+  if (!mainContent) {
+    return;
+  }
+
+  let page = "beranda";
+
+  if (document.getElementById("alat-list")) {
+    page = "katalog";
+  } else if (document.getElementById("form-peminjaman")) {
+    page = "form";
+  }
+
+  const alatId = new URLSearchParams(
+    window.location.search
+  ).get("alat");
+
+  const controller = new AbortController();
+  requestAktif = controller;
+
+  mainContent.setAttribute("aria-busy", "true");
+
+  try {
+    await aktifkanHalaman(page, alatId, controller);
+  } catch (error) {
+    if (
+      error.name !== "AbortError" &&
+      !controller.signal.aborted
+    ) {
+      tampilkanGagal(error, page);
+    }
+  } finally {
+    if (requestAktif === controller) {
+      mainContent.removeAttribute("aria-busy");
+      requestAktif = null;
+    }
+  }
 }
+
+mulaiHalaman();

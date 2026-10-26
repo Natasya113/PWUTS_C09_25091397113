@@ -12,10 +12,10 @@ window.initForm = function (alatId) {
   const durasi = document.getElementById("info-durasi");
   const pesan = document.getElementById("form-pesan");
   const tombol = document.getElementById("kirim-pengajuan");
+  const aman = window.amanHTML;
 
   let terkirim = false;
 
-  // Tanggal lokal perangkat pengguna.
   const sekarang = new Date();
   const hariIni = [
     sekarang.getFullYear(),
@@ -26,7 +26,6 @@ window.initForm = function (alatId) {
   tglPinjam.min = hariIni;
   tglKembali.min = hariIni;
 
-  // Pilihan berasal dari data contoh tetap di konten.js.
   daftar.innerHTML = window.dataAlat.map(function (alat) {
     const tersedia = alat.stok > 0;
     const dipilih = tersedia && String(alat.id) === String(alatId);
@@ -41,8 +40,9 @@ window.initForm = function (alatId) {
             ${dipilih ? "checked" : ""}
             ${tersedia ? "" : "disabled"}
           >
+
           <span>
-            <strong>${alat.nama}</strong>
+            <strong>${aman(alat.nama)}</strong>
             <small>
               ${tersedia ? `Tersedia ${alat.stok} unit` : "Stok habis"}
             </small>
@@ -51,6 +51,7 @@ window.initForm = function (alatId) {
 
         <div class="pinjam-jumlah">
           <label for="jumlah-${alat.id}">Jumlah unit</label>
+
           <input
             type="number"
             id="jumlah-${alat.id}"
@@ -67,17 +68,30 @@ window.initForm = function (alatId) {
     `;
   }).join("");
 
+  if (!window.dataAlat.length) {
+    daftar.textContent = "Belum ada data alat.";
+  }
+
+  function tampilkanPesan(teks, berhasil) {
+    pesan.hidden = false;
+    pesan.className = berhasil
+      ? "pinjam-message berhasil"
+      : "pinjam-message gagal";
+    pesan.textContent = teks;
+    pesan.focus();
+  }
+
   function perbaruiRingkasan() {
     let jenis = 0;
     let unit = 0;
 
     daftar.querySelectorAll(".pilih-alat").forEach(function (checkbox) {
       const input = document.getElementById(`jumlah-${checkbox.value}`);
-
       input.disabled = !checkbox.checked;
 
       if (checkbox.checked) {
         jenis++;
+
         const nilai = Number(input.value);
 
         if (Number.isInteger(nilai) && nilai > 0) {
@@ -103,6 +117,7 @@ window.initForm = function (alatId) {
       tglKembali.setCustomValidity(
         "Tanggal kembali tidak boleh lebih awal dari tanggal pinjam."
       );
+
       durasi.textContent = "Periksa kembali urutan tanggal peminjaman.";
       return;
     }
@@ -121,14 +136,28 @@ window.initForm = function (alatId) {
     }
   }
 
-  function tampilkanPesan(teks, berhasil) {
-    pesan.hidden = false;
-    pesan.className = berhasil
-      ? "pinjam-message berhasil"
-      : "pinjam-message gagal";
-    pesan.textContent = teks;
-    pesan.focus();
-  }
+  form.addEventListener("invalid", function (event) {
+    const input = event.target;
+
+    if (!input.matches('.pinjam-jumlah input[type="number"]')) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const id = input.id.replace("jumlah-", "");
+    const alat = window.dataAlat.find(function (item) {
+      return String(item.id) === id;
+    });
+
+    if (!alat) return;
+
+    const teks = input.validity.rangeOverflow
+      ? `Jumlah ${alat.nama} melebihi stok tersedia. Maksimal ${alat.stok} unit.`
+      : `Jumlah ${alat.nama} wajib berupa bilangan bulat antara 1 dan ${alat.stok} unit.`;
+
+    tampilkanPesan(teks, false);
+  }, true);
 
   daftar.addEventListener("change", perbaruiRingkasan);
   daftar.addEventListener("input", perbaruiRingkasan);
@@ -159,6 +188,11 @@ window.initForm = function (alatId) {
         return String(item.id) === checkbox.value;
       });
 
+      if (!alat) {
+        tampilkanPesan("Data alat tidak valid. Muat ulang halaman.", false);
+        return;
+      }
+
       const input = document.getElementById(`jumlah-${alat.id}`);
       const jumlah = Number(input.value);
 
@@ -168,10 +202,9 @@ window.initForm = function (alatId) {
         jumlah > alat.stok
       ) {
         tampilkanPesan(
-          `Jumlah ${alat.nama} harus berupa bilangan bulat antara 1 dan ${alat.stok}.`,
+          `Jumlah ${alat.nama} harus berupa bilangan bulat antara 1 dan ${alat.stok} unit.`,
           false
         );
-        input.focus();
         return;
       }
     }
@@ -218,7 +251,7 @@ window.initForm = function (alatId) {
       tombol.textContent = "Pengajuan Terkirim";
     } catch (error) {
       const teks = error instanceof SyntaxError
-        ? "Respons server tidak sesuai. Periksa isi process.php dan jalankan melalui localhost."
+        ? "Respons server tidak sesuai. Periksa process.php dan jalankan melalui localhost."
         : error.message;
 
       tampilkanPesan(teks, false);
@@ -231,4 +264,5 @@ window.initForm = function (alatId) {
   });
 
   perbaruiRingkasan();
+  perbaruiTanggal();
 };
