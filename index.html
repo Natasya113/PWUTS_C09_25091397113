@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="Layanan peminjaman alat untuk kegiatan akademik Fakultas Vokasi UNESA."
+  >
+
+  <title>SIPTA — Peminjaman Alat</title>
+
+  <link rel="stylesheet" href="style.css">
+  
+  <script src="js/konten.js"></script>
+  <script src="js/validasi.js"></script>
+  <script src="js/main.js"></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main-content">
+    Lewati ke konten utama
+  </a>
+
+  <!-- HEADER DAN NAVIGASI -->
+  <header class="site-header">
+    <div class="container header-inner">
+
+      <!-- Logo: kembali ke beranda -->
+      <a
+        class="brand"
+        href="index.html"
+        aria-label="SIPTA Beranda"
+        data-page="beranda"
+      >
+        <span class="brand-symbol" aria-hidden="true">S</span>
+
+        <span class="brand-text">
+          <strong>SIPTA</strong>
+          <small>VOKASI UNESA</small>
+        </span>
+      </a>
+
+      <nav class="navigation" aria-label="Navigasi utama">
+        <a
+          href="index.html"
+          class="nav-link active"
+          aria-current="page"
+          data-page="beranda"
+        >
+          Beranda
+        </a>
+
+        <a
+          href="pages/konten.html"
+          class="nav-link"
+          data-page="katalog"
+        >
+          Katalog Alat
+        </a>
+
+        <a
+          href="pages/form.html"
+          class="nav-link"
+          data-page="form"
+        >
+          Ajukan Peminjaman
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- Konten katalog dan formulir dimuat ke sini melalui Ajax -->
+  <main id="main-content" tabindex="-1">
+
+    <!-- BAGIAN UTAMA BERANDA -->
+    <section class="hero">
+      <div class="container hero-layout">
+
+        <div class="hero-copy">
+          <p class="eyebrow">
+            LAYANAN PEMINJAMAN ALAT
+          </p>
+
+          <h1>
+            Alat yang tepat untuk
+            <span>ide hebatmu.</span>
+          </h1>
+
+          <p class="hero-description">
+            Dukung perkuliahan, tugas, dan kegiatan akademikmu dengan
+            fasilitas Fakultas Vokasi UNESA. Cari alat yang tersedia
+            dan ajukan peminjaman melalui SIPTA.
+          </p>
+
+          <div class="hero-actions">
+            <a
+              href="pages/konten.html"
+              class="button button-primary"
+              data-page="katalog"
+            >
+              Lihat Katalog Alat
+              <span aria-hidden="true">→</span>
+            </a>
+
+            <a
+              href="#cara-pinjam"
+              class="button button-secondary"
+            >
+              Cara Meminjam
+            </a>
+          </div>
+
+          <div class="hero-notes">
+            <span>✓ Tanpa biaya peminjaman</span>
+            <span>✓ Tanpa surat permohonan</span>
+          </div>
+        </div>
+
+        <!-- KARTU INFORMASI LAYANAN -->
+        <aside class="service-card" aria-labelledby="service-title">
+          <div class="service-top">
+            <span class="service-label">
+              LAYANAN MAHASISWA
+            </span>
+
+            <span class="service-mark" aria-hidden="true">S</span>
+          </div>
+
+          <h2 id="service-title">
+            Siap mendukung<br>
+            kegiatanmu.
+          </h2>
+
+          <p>
+            Mulai dari memilih alat hingga mengajukan jadwal
+            peminjaman dalam satu layanan.
+          </p>
+
+          <div class="service-feature">
+            <span class="feature-number">01</span>
+
+            <div>
+              <strong>Temukan kebutuhanmu</strong>
+              <small>Lihat informasi dan ketersediaan alat.</small>
+            </div>
+          </div>
+
+          <div class="service-feature">
+            <span class="feature-number">02</span>
+
+            <div>
+              <strong>Tentukan jadwalmu</strong>
+              <small>Isi tanggal pinjam dan rencana kembali.</small>
+            </div>
+          </div>
+
+          <div class="service-bottom">
+            <span>Biaya peminjaman alat</span>
+            <strong>Gratis</strong>
+          </div>
+        </aside>
+
+      </div>
+    </section>
+
+    <!-- INFORMASI LAYANAN -->
+    <section class="benefits-section" aria-label="Informasi layanan">
+      <div class="container benefits-grid">
+
+        <article class="benefit">
+          <span class="benefit-icon" aria-hidden="true">01</span>
+
+          <div>
+            <h2>Informasi alat</h2>
+            <p>
+              Periksa deskripsi, kondisi, dan stok sebelum mengajukan.
+            </p>
+          </div>
+        </article>
+
+        <article class="benefit">
+          <span class="benefit-icon" aria-hidden="true">02</span>
+
+          <div>
+            <h2>Pengajuan daring</h2>
+            <p>
+              Isi kebutuhan dan jadwal peminjaman melalui formulir.
+            </p>
+          </div>
+        </article>
+
+        <article class="benefit">
+          <span class="benefit-icon" aria-hidden="true">03</span>
+
+          <div>
+            <h2>Persetujuan admin</h2>
+            <p>
+              Setiap pengajuan diperiksa sebelum alat dapat dipinjam.
+            </p>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- CARA MEMINJAM -->
+    <section id="cara-pinjam" class="guide-section">
+      <div class="container">
+
+        <div class="section-heading">
+          <p class="eyebrow">ALUR PEMINJAMAN</p>
+
+          <h2>Mulai dengan tiga langkah sederhana.</h2>
+
+          <p>
+            Siapkan kebutuhan alat dan jadwal kegiatanmu sebelum
+            mengajukan peminjaman.
+          </p>
+        </div>
+
+        <ol class="steps-grid">
+          <li class="step-card">
+            <span class="step-number" aria-hidden="true">1</span>
+
+            <h3>Pilih alat</h3>
+
+            <p>
+              Buka katalog, cari alat yang dibutuhkan, lalu periksa
+              kondisi dan jumlah unit yang tersedia.
+            </p>
+          </li>
+
+          <li class="step-card">
+            <span class="step-number" aria-hidden="true">2</span>
+
+            <h3>Lengkapi formulir</h3>
+
+            <p>
+              Pilih alat dan jumlah unit, isi tanggal pinjam,
+              tanggal rencana kembali, serta keperluan kegiatan.
+            </p>
+          </li>
+
+          <li class="step-card">
+            <span class="step-number" aria-hidden="true">3</span>
+
+            <h3>Tunggu persetujuan</h3>
+
+            <p>
+              Pengajuan berstatus “Menunggu” hingga diproses admin.
+              Pengiriman formulir belum berarti peminjaman disetujui.
+            </p>
+          </li>
+        </ol>
+
+      </div>
+    </section>
+
+    <!-- KETENTUAN PEMINJAMAN -->
+    <section class="terms-section">
+      <div class="container terms-layout">
+
+        <div>
+          <p class="eyebrow">SEBELUM MENGAJUKAN</p>
+
+          <h2>
+            Pinjam dengan bijak,<br>
+            kembalikan tepat waktu.
+          </h2>
+
+          <p class="terms-description">
+            Jaga fasilitas bersama agar dapat terus digunakan
+            untuk mendukung kegiatan mahasiswa.
+          </p>
+        </div>
+
+        <div class="terms-card">
+          <h3>Ketentuan peminjaman alat</h3>
+
+          <ul class="terms-list">
+            <li>
+              Peminjaman alat tidak dikenakan biaya.
+            </li>
+            <li>
+              Tidak perlu mengunggah surat peminjaman.
+            </li>
+            <li>
+              Jumlah alat yang diajukan tidak boleh melebihi
+              stok tersedia.
+            </li>
+            <li>
+              Isi data dan keperluan peminjaman dengan benar.
+            </li>
+            <li>
+              Gunakan alat dengan baik dan kembalikan sesuai jadwal.
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TOMBOL PENGAJUAN -->
+    <section class="cta-section">
+      <div class="container">
+        <div class="cta-box">
+
+          <div>
+            <h2>Sudah tahu alat yang kamu butuhkan?</h2>
+            <p>
+              Siapkan jadwalmu dan lengkapi pengajuan peminjaman.
+            </p>
+          </div>
+
+          <a
+            href="pages/form.html"
+            class="button button-white"
+            data-page="form"
+          >
+            Ajukan Peminjaman
+            <span aria-hidden="true">→</span>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+
+      <div>
+        <strong>SIPTA</strong>
+        <p>Sistem Peminjaman dan Sewa Alat dan Ruangan</p>
+      </div>
+
+      <p>
+        Fakultas Vokasi<br>
+        Universitas Negeri Surabaya
+      </p>
+
+    </div>
+  </footer>
+
+</body>
+</html>

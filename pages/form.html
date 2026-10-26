@@ -1,0 +1,130 @@
+<p class="alat-breadcrumb">
+  Layanan Mahasiswa / Pengajuan Peminjaman
+</p>
+
+<div class="alat-heading">
+  <div>
+    <p class="eyebrow">LAYANAN PEMINJAMAN ALAT</p>
+    <h1>Pengajuan Peminjaman</h1>
+    <p>
+      Pilih alat dan lengkapi kebutuhan peminjamanmu.
+      Semua kolom bertanda * wajib diisi.
+    </p>
+  </div>
+  <span class="alat-free-label">Tanpa biaya</span>
+</div>
+
+<div class="alat-demo-note">
+  Simulasi UTS: data alat menggunakan stok contoh.
+  Pengajuan disimpan sementara dalam sesi PHP, belum ke database.
+</div>
+
+<form
+  id="form-peminjaman"
+  class="pinjam-form"
+  action="process.php"
+  method="post"
+>
+  <fieldset class="pinjam-section">
+    <legend>1. Pilih alat *</legend>
+
+    <p class="pinjam-help">
+      Kamu dapat memilih lebih dari satu jenis alat.
+      Centang alat, lalu tentukan jumlah unitnya.
+    </p>
+
+    <div id="pilihan-alat" class="pinjam-alat-list"></div>
+  </fieldset>
+
+  <fieldset class="pinjam-section">
+    <legend>2. Jadwal peminjaman *</legend>
+
+    <div class="pinjam-grid">
+      <div class="pinjam-field">
+        <label for="tgl-pinjam">Tanggal pinjam *</label>
+        <input
+          type="date"
+          id="tgl-pinjam"
+          name="tgl_pinjam"
+          required
+        >
+      </div>
+
+      <div class="pinjam-field">
+        <label for="tgl-kembali">Tanggal rencana kembali *</label>
+        <input
+          type="date"
+          id="tgl-kembali"
+          name="tgl_kembali_rencana"
+          required
+        >
+      </div>
+    </div>
+
+    <p id="info-durasi" class="pinjam-help" aria-live="polite">
+      Pilih tanggal pinjam dan tanggal rencana kembali.
+    </p>
+  </fieldset>
+
+  <fieldset class="pinjam-section">
+    <legend>3. Keperluan peminjaman *</legend>
+
+    <div class="pinjam-field">
+      <label for="keperluan">Jelaskan kegiatanmu</label>
+      <textarea
+        id="keperluan"
+        name="keperluan"
+        rows="4"
+        maxlength="1000"
+        placeholder="Contoh: Presentasi tugas mata kuliah Pemrograman Web."
+        required
+      ></textarea>
+    </div>
+  </fieldset>
+
+  <div class="pinjam-summary">
+    <div>
+      <span>Alat yang dipilih</span>
+      <strong id="ringkasan-alat" aria-live="polite">
+        Belum ada alat dipilih
+      </strong>
+    </div>
+
+    <div>
+      <span>Biaya peminjaman</span>
+      <strong class="alat-free">Gratis</strong>
+    </div>
+  </div>
+
+  <p class="pinjam-help">
+    Pengajuan akan berstatus “Menunggu” hingga diproses admin.
+    Peminjaman alat tidak memerlukan surat permohonan.
+  </p>
+
+  <div
+    id="form-pesan"
+    class="pinjam-message"
+    role="status"
+    aria-live="polite"
+    tabindex="-1"
+    hidden
+  ></div>
+
+  <div class="pinjam-actions">
+    <a
+      href="pages/konten.html"
+      class="button button-secondary"
+      data-page="katalog"
+    >
+      Kembali ke Katalog
+    </a>
+
+    <button
+      type="submit"
+      id="kirim-pengajuan"
+      class="button button-primary"
+    >
+      Kirim Pengajuan
+    </button>
+  </div>
+</form>

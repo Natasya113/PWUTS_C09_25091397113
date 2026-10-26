@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="Katalog alat dan layanan peminjaman alat Fakultas Vokasi UNESA."
+  >
+
+  <title>Katalog Alat - SIPTA</title>
+
+  <!-- CSS utama berada di folder utama proyek -->
+  <link rel="stylesheet" href="../style.css">
+
+  <!-- JavaScript berada di folder js -->
+  <script src="../js/konten.js" defer></script>
+  <script src="../js/validasi.js" defer></script>
+  <script src="../js/main.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main-content">
+    Lewati ke konten utama
+  </a>
+
+  <main id="main-content" tabindex="-1">
+    <section class="alat-page">
+      <div class="alat-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="alat-sidebar">
+          <div class="alat-sidebar-title">
+            <a
+              class="alat-sidebar-icon"
+              href="../index.html"
+              aria-label="SIPTA Beranda"
+            >S</a>
+
+            <div>
+              <strong>SIPTA</strong>
+              <small>Layanan mahasiswa</small>
+            </div>
+          </div>
+
+          <p class="alat-menu-label">MENU LAYANAN</p>
+
+          <nav class="alat-menu" aria-label="Menu layanan alat">
+            <a href="../index.html" data-page="beranda">
+              Beranda
+            </a>
+
+            <a
+              href="konten.html"
+              class="selected"
+              aria-current="page"
+              data-page="katalog"
+            >
+              Katalog Alat
+            </a>
+
+            <a href="form.html" data-page="form">
+              Pengajuan Peminjaman
+            </a>
+          </nav>
+
+          <div class="alat-sidebar-note">
+            <strong>Peminjaman gratis</strong>
+            <p>
+              Pilih alat sesuai kebutuhan. Peminjaman alat
+              tidak memerlukan surat permohonan.
+            </p>
+          </div>
+        </aside>
+
+        <!-- KONTEN KATALOG -->
+        <div class="alat-main">
+          <p class="alat-breadcrumb">
+            Layanan Mahasiswa / Alat
+          </p>
+
+          <div class="alat-heading">
+            <div>
+              <p class="eyebrow">DAFTAR &amp; PENGAJUAN</p>
+
+              <h1>Katalog Alat</h1>
+
+              <p>
+                Pilih alat, periksa stok, dan ajukan peminjaman
+                untuk kegiatanmu.
+              </p>
+            </div>
+
+            <span class="alat-free-label">Tanpa biaya</span>
+          </div>
+
+          <div class="alat-demo-note">
+            Data dan stok merupakan contoh simulasi UTS.
+          </div>
+
+          <!-- PENCARIAN DAN FILTER -->
+          <div class="alat-toolbar">
+            <div class="filter-field">
+              <label for="search-alat">Cari alat</label>
+
+              <input
+                type="search"
+                id="search-alat"
+                placeholder="Cari nama atau deskripsi alat..."
+              >
+            </div>
+
+            <div class="filter-field">
+              <label for="filter-stok">Ketersediaan</label>
+
+              <select id="filter-stok">
+                <option value="semua">Semua alat</option>
+                <option value="tersedia">Tersedia</option>
+                <option value="habis">Stok habis</option>
+              </select>
+            </div>
+
+            <button
+              type="button"
+              id="reset-filter"
+              class="button button-secondary"
+            >
+              Reset
+            </button>
+          </div>
+
+          <!-- DAFTAR ALAT DIISI OLEH JAVASCRIPT -->
+          <div class="alat-list-heading">
+            <h2>Daftar alat</h2>
+            <p id="catalog-result" role="status"></p>
+          </div>
+
+          <div id="alat-list" class="alat-grid"></div>
+
+          <p id="catalog-empty" class="catalog-empty" hidden>
+            Alat tidak ditemukan. Coba kata kunci atau filter
+            yang berbeda.
+          </p>
+
+          <p class="alat-bottom-note">
+            Pengajuan akan diperiksa admin. Mengirim formulir
+            belum berarti peminjaman disetujui.
+          </p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <strong>SIPTA</strong>
+        <p>Sistem Peminjaman dan Sewa Alat dan Ruangan</p>
+      </div>
+
+      <p>
+        Fakultas Vokasi<br>
+        Universitas Negeri Surabaya
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
