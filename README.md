@@ -32,20 +32,17 @@ Di bagian bawah formulir, saya menampilkan ringkasan jumlah jenis alat dan total
 
 Isian pengajuansaya sesuaikan dengan rancangan tabel peminjaman_alat dan detail_peminjaman_alat. Tanggal dan keperluan merupakan bagian dari data pengajuan, sedangkan ID alat dan jumlah unit merupakan bagian dari detail peminjaman. Namun, penyimpanan pengajuan pada versi ini masih menggunakan sesi PHP.
 
-Beranda
-Halaman beranda menampilkan ringkasan dan ketersediaan alat.
+Beranda - Halaman beranda menampilkan ringkasan dan ketersediaan alat.
 
-![Halaman Beranda]![alt text](image-1.png)
+[Halaman Beranda]![alt text](image-1.png)
 
-Katalog Alat
-Halaman katalog menampilkan informasi alat, pencarian, dan filter stok.
+Katalog Alat - Halaman katalog menampilkan informasi alat, pencarian, dan filter stok.
 
-![Katalog Alat]![alt text](image-2.png)
+[Katalog Alat]![alt text](image-2.png)
 
-Pengajuan Peminjaman
-Halaman ini digunakan untuk memilih alat dan mengisi kebutuhan peminjaman.
+Pengajuan Peminjaman - Halaman ini digunakan untuk memilih alat dan mengisi kebutuhan peminjaman.
 
-![Pengajuan Peminjaman]![alt text](image-3.png)
+[Pengajuan Peminjaman]![alt text](image-3.png)
 
 Penggunaan HTML, CSS, dan JavaScript
 Saya menggunakan HTML untuk menyusun halaman, CSS untuk mengatur tampilan, dan JavaScript untuk membuat fitur interaktif. CSS saya pisahkan dalam file style.css agar pengaturan tampilan dapat digunakan oleh semua halaman.
