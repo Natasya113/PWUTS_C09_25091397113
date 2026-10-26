@@ -1,6 +1,5 @@
 "use strict";
 
-// konten.js berada di folder js/.
 window.SIPTA_ROOT = new URL("../", document.currentScript.src);
 window.dataAlat = [];
 

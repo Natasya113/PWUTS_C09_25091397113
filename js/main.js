@@ -11,11 +11,6 @@ const alamatHalaman = {
 
 let requestAktif = null;
 
-
-/* =========================================================
-   1. TAMPILAN DAN MENU AKTIF
-   ========================================================= */
-
 function aturTampilan(page) {
   // Semua halaman sekarang menggunakan sidebar.
   document.body.classList.add("mode-layanan");
@@ -63,11 +58,6 @@ function aturTampilan(page) {
     }
   });
 }
-
-
-/* =========================================================
-   2. KERANGKA SIDEBAR
-   ========================================================= */
 
 function buatLayoutLayanan(isi) {
   return `
@@ -135,11 +125,6 @@ function buatLayoutLayanan(isi) {
   `;
 }
 
-
-/* =========================================================
-   3. DATA BERANDA DASHBOARD
-   ========================================================= */
-
 function initBeranda() {
   const jenis = document.getElementById("home-jenis");
   const total = document.getElementById("home-total");
@@ -200,11 +185,6 @@ function initBeranda() {
   }).join("");
 }
 
-
-/* =========================================================
-   4. PESAN GAGAL MEMUAT HALAMAN
-   ========================================================= */
-
 function tampilkanGagal(error, page) {
   mainContent.innerHTML = buatLayoutLayanan(`
     <div role="alert">
@@ -243,11 +223,6 @@ function tampilkanGagal(error, page) {
   console.error(error);
 }
 
-
-/* =========================================================
-   5. AKTIFKAN BERANDA, KATALOG, ATAU FORMULIR
-   ========================================================= */
-
 async function aktifkanHalaman(page, alatId, controller) {
   aturTampilan(page);
 
@@ -258,7 +233,6 @@ async function aktifkanHalaman(page, alatId, controller) {
     tombol.textContent = "Memuat data alat...";
   }
 
-  // Ambil data terbaru dari MySQL untuk setiap halaman.
   await window.muatDataAlat(controller.signal);
 
   if (controller.signal.aborted) {
@@ -287,21 +261,14 @@ async function aktifkanHalaman(page, alatId, controller) {
     }
   }
 
-  // Termasuk tombol yang baru dibuat oleh JavaScript.
   aturTampilan(page);
 }
-
-
-/* =========================================================
-   6. PEMUATAN HALAMAN MELALUI AJAX
-   ========================================================= */
 
 async function muatHalaman(page, alatId) {
   if (!alamatHalaman[page] || !mainContent) {
     return;
   }
 
-  // Hentikan permintaan sebelumnya jika pengguna pindah halaman.
   if (requestAktif) {
     requestAktif.abort();
   }
@@ -342,7 +309,6 @@ async function muatHalaman(page, alatId) {
 
     const konten = dokumen.querySelector("#main-content");
 
-    // Ambil bagian utama saja agar dokumen tidak bertumpuk.
     const isi = konten
       ? konten.innerHTML
       : dokumen.body.innerHTML;
@@ -376,11 +342,6 @@ async function muatHalaman(page, alatId) {
     }
   }
 }
-
-
-/* =========================================================
-   7. KLIK MENU DAN TOMBOL PINJAM
-   ========================================================= */
 
 document.addEventListener("click", function (event) {
   if (!(event.target instanceof Element)) {
@@ -418,11 +379,6 @@ document.addEventListener("click", function (event) {
 
   muatHalaman(page, alatId);
 });
-
-
-/* =========================================================
-   8. HALAMAN YANG DIBUKA LANGSUNG
-   ========================================================= */
 
 async function mulaiHalaman() {
   if (!mainContent) {
